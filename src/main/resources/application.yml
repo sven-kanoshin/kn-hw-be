@@ -1,0 +1,35 @@
+server:
+  servlet:
+    context-path: /kn
+  port: 8666
+  error:
+     include-message: always
+       
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+  mvc:
+    dispatch-options-request:true
+    throw-exception-if-no-handler-found:true
+  web:
+    resources:
+        add-mappings: false
+  application:
+    version: "${project.fullVersion}"
+    buildTime: "${project.buildTime}"
+  output:
+    ansi:
+      enabled: DETECT
+  datasource:
+    initialize: true  
+    url: "jdbc:h2:mem:cities"
+    driver-class-name: "org.h2.Driver"
+  jpa:
+     database-platform: org.hibernate.dialect.H2Dialect
+     defer-datasource-initialization: true
+     open-in-view: false
+     
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: false     

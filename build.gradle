@@ -1,0 +1,93 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.4'
+	id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.palantir.git-version' version '2.0.0'  apply false	
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+ext {
+    gitHash = "- SNAPSHOT"
+    buildTime = java.time.ZonedDateTime.now().format(java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
+    //archiveNameOverride = project.properties['archiveNameOverride'] ?: "${rootProject.name}"
+    archiveNameOverride = project.properties['archiveNameOverride'] ?: "${rootProject.name}"
+}
+
+repositories {
+	mavenCentral()
+}
+
+group = 'ee.proekspert'
+version = '1.0'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+apply plugin: 'eclipse'
+    
+ // Special handling for git plugin for non-git builds
+try {
+    apply plugin: "com.palantir.git-version"
+    gitHash = '#' + versionDetails().gitHash
+}
+catch (Exception e) {
+    // this will happen when the project is not attached to git
+    // do nothing
+}
+
+//for property injection into application.yaml
+ext.fullVersion = "${version} ${gitHash}"
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
+	// In-memory DB
+	implementation 'com.h2database:h2'
+	// Parsing CSV
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
+	// Swagger doc
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+	// Validation provider for Swagger doc
+	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+	
+	// For leaner source code
+	compileOnly 'org.projectlombok:lombok'
+	
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+bootJar {
+    manifest {
+        attributes(
+                "Implementation-Title": "Kuehne + Nagel: Homework",
+                "Implementation-Vendor": "AS Proekspert",
+                "Implementation-Version": fullVersion,
+                "Build-Time": buildTime,
+                "Build-Author": "${System.properties['user.name']}",
+        )
+    }
+    archiveBaseName = "${archiveNameOverride}"
+    archiveVersion = ''
+}
+
+//expand gradle/project properties into resources (ie application.yml)
+//Blacklist filter; can also be whitelist, whichever is shorter
+processResources {
+ filesNotMatching(['favicon.ico','*.csv']) {
+     expand(project.properties)
+ }
+}

@@ -1,0 +1,7 @@
+FROM bellsoft/liberica-openjdk-alpine:17
+
+COPY build/libs/kn-homework.jar /app
+
+WORKDIR /app
+
+CMD ["java", "-jar", "kn-homework.jar"]
