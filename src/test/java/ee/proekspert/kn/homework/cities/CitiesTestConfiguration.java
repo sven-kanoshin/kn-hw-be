@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ByteArrayResource;
 
 import ee.proekspert.kn.homework.HomeworkApplication;
-import ee.proekspert.kn.homework.cities.CitiesConfiguration;
 
 import static org.mockito.Mockito.when;
 
