@@ -15,9 +15,18 @@ JDK17
 `java -jar kn-homework.jar`
 
 ### Dockerization
-Not worth it in the current state. Can be included in the future
+## Build
+`docker build -t kn-hw-be .`
+
+## Run
+`docker run -d --name=kn-hw-be -p9090:8666 kn-hw-be:latest`
+
+With the given configuration, the Swagger will be located at `http://localhost:9090/kn/swagger-ui.html`
 
 ## Using
+
+### Frontend
+**Note:** The matching Frontend project is at `https://github.com/raulmetsva/city-list`
 
 ### Accessing the Backend
 
