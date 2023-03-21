@@ -5,6 +5,7 @@ WORKDIR /app
 
 COPY . /app
 
+RUN chmod -R +x /app
 RUN ./gradlew --no-scan --stacktrace -Duser.name="Docker Builder" -ParchiveNameOverride=kn-homework build
 
 FROM bellsoft/liberica-openjdk-alpine:17
